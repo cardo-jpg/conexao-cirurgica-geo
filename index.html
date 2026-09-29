@@ -1,0 +1,261 @@
+<title>Otimização para IA — Conexão Cirúrgica</title>
+<style>
+  :root{
+    --teal:#0d6b62;--teal-deep:#094c46;--teal-ink:#06322e;
+    --paper:#f4f1ea;--surface:#fbfaf6;--ink:#1c2b28;--muted:#5f6f6a;
+    --line:#e2dccf;--line-strong:#d0c8b6;--gold:#b98a3c;--gold-soft:#efe4cf;
+    --ok:#128c4b;--ok-bg:#e7f6ec;--code-bg:#0f1a17;--code-ink:#d6e7e1;
+    --shadow:0 1px 2px rgba(6,50,46,.05),0 10px 26px -14px rgba(6,50,46,.22);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --teal:#46c4b2;--teal-deep:#2fa593;--teal-ink:#d9efe9;
+    --paper:#0e1614;--surface:#17221f;--ink:#e9efec;--muted:#94a49d;
+    --line:#26332f;--line-strong:#34433e;--gold:#d8a24f;--gold-soft:#2a2013;
+    --ok:#4bd07f;--ok-bg:#14251a;--code-bg:#0a1210;--code-ink:#cfe3dd;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -16px rgba(0,0,0,.6);
+  }}
+  :root[data-theme="dark"]{
+    --teal:#46c4b2;--teal-deep:#2fa593;--teal-ink:#d9efe9;
+    --paper:#0e1614;--surface:#17221f;--ink:#e9efec;--muted:#94a49d;
+    --line:#26332f;--line-strong:#34433e;--gold:#d8a24f;--gold-soft:#2a2013;
+    --ok:#4bd07f;--ok-bg:#14251a;--code-bg:#0a1210;--code-ink:#cfe3dd;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6;font-size:16px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
+  header{padding:52px 0 26px;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.16em;
+    text-transform:uppercase;font-weight:700;color:var(--teal-deep)}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--gold);border-radius:2px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:600;font-size:clamp(28px,6vw,40px);
+    line-height:1.1;margin:16px 0 10px;letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--muted);font-size:15px;margin:0}
+  h2{font-family:Georgia,serif;font-size:24px;color:var(--teal-ink);margin:42px 0 6px}
+  h3{font-size:17px;margin:26px 0 6px;color:var(--teal-ink)}
+  p{margin:0 0 14px}
+  b,strong{color:var(--teal-ink)}
+  .intro{margin:26px 0 6px;padding:22px 24px;background:var(--gold-soft);
+    border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:12px}
+  .intro p:last-child{margin:0}
+  .ok{margin:24px 0;padding:18px 22px;background:var(--ok-bg);border:1px solid color-mix(in srgb,var(--ok) 25%,transparent);border-radius:12px}
+  .ok h3{margin:0 0 8px;color:var(--ok)}
+  .ok ul{margin:0;padding-left:20px}.ok li{margin:5px 0}
+
+  ol.rank{list-style:none;counter-reset:r;padding:0;margin:16px 0}
+  ol.rank>li{counter-increment:r;position:relative;padding:16px 18px 16px 58px;background:var(--surface);
+    border:1px solid var(--line);border-radius:12px;margin:12px 0;box-shadow:var(--shadow)}
+  ol.rank>li::before{content:counter(r);position:absolute;left:16px;top:16px;width:28px;height:28px;
+    background:var(--teal);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-family:Georgia,serif}
+  :root[data-theme="dark"] ol.rank>li::before{color:#06251f}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 8px;border-radius:5px;margin-left:6px;vertical-align:middle}
+  .tag.easy{background:var(--ok-bg);color:var(--ok)}
+  .tag.mid{background:var(--gold-soft);color:var(--gold)}
+
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow)}
+  .where{font-size:13.5px;color:var(--muted);margin:0 0 10px}
+  .where b{color:var(--teal-ink)}
+  pre{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:16px;overflow-x:auto;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;line-height:1.5;margin:0}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .fill{color:var(--gold);font-weight:700}
+  .note{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+  blockquote{margin:12px 0;border-left:3px solid var(--teal);padding-left:16px;font-style:italic;color:var(--ink)}
+  blockquote cite{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:5px}
+  footer{margin-top:40px;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--line);padding-top:20px}
+  @media (max-width:480px){.wrap{padding:0 16px 60px}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Conexão Cirúrgica · Otimização para IA</span>
+    <h1>Fazer as IAs recomendarem os cursos de propósito</h1>
+    <p class="sub">Como transformar a venda que veio do ChatGPT (Wellington, curso STAR) em um canal que se repete — sem gastar em anúncio.</p>
+  </header>
+
+  <div class="intro">
+    <p><b>O que aconteceu:</b> o Wellington comprou o curso STAR (R$ 1.997) 41 minutos depois de clicar num link que o <b>ChatGPT</b> recomendou pra ele — sem nunca ter falado com vocês.</p>
+    <p><b>Por que dá pra repetir:</b> quando alguém pergunta a uma IA "melhor curso de retalhos online" ou "como aprender reconstrução cutânea", a IA lê os sites e recomenda os que ela <b>entende e confia</b>. Hoje o site de vocês é legível, mas não entrega os "sinais" que fazem a IA citar com segurança. Este documento é o passo a passo pra corrigir isso — é implementação no site, não pede nada do dia a dia do Bruno.</p>
+  </div>
+
+  <div class="ok">
+    <h3>✓ O que já está certo (não precisa mexer)</h3>
+    <ul>
+      <li>O site <b>não bloqueia</b> os robôs de IA (ChatGPT, Claude, Perplexity conseguem ler).</li>
+      <li>É WordPress — o conteúdo é lido pelos robôs sem problema.</li>
+      <li>A página do STAR já tem <b>FAQ</b> e as <b>credenciais do Dr. Bruno</b> (isso conta muito).</li>
+    </ul>
+  </div>
+
+  <h2>As 5 mudanças de maior impacto</h2>
+  <ol class="rank">
+    <li><b>Adicionar "dados estruturados" (schema) nas páginas de curso.</b> <span class="tag easy">principal</span><br>É um código invisível que diz pra IA, em linguagem de máquina: "isto é um curso, custa X, o professor é o Dr. Bruno, ensina isto". É o que mais falta hoje. Códigos prontos abaixo.</li>
+    <li><b>Começar cada página com uma definição curta e citável.</b> <span class="tag easy">fácil</span><br>As IAs copiam os primeiros parágrafos. Um bloco de ~50 palavras respondendo "o que é o Método STAR" no topo já melhora muito.</li>
+    <li><b>Transformar os títulos em perguntas reais.</b> <span class="tag easy">fácil</span><br>Gente pergunta pra IA em forma de pergunta. Títulos como "Para quem é o curso de retalhos?" casam com isso.</li>
+    <li><b>Colocar depoimentos na página do curso.</b> <span class="tag mid">médio</span><br>Hoje não tem nenhum. Prova social é sinal forte de confiança pra IA (e pra pessoa). Já temos o do Roberto Castro.</li>
+    <li><b>Data de publicação/atualização visível + revisar a cada poucos meses.</b> <span class="tag easy">fácil</span><br>Conteúdo recente é citado ~3x mais. Basta mostrar "atualizado em [mês/ano]".</li>
+  </ol>
+
+  <h2>Código pronto pra colar</h2>
+  <p>Passe estes blocos pra quem mexe no site (ou cole via plugin de "código no cabeçalho", tipo o próprio Elementor / "Insert Headers and Footers"). São invisíveis pro visitante — só os robôs leem.</p>
+
+  <div class="step">
+    <h3>1. Curso STAR — schema de Curso</h3>
+    <p class="where">Onde: <b>na página</b> <code>/curso-de-retalho-on-line-conexao-cirurgica/</code>, dentro do &lt;head&gt; ou num bloco HTML.</p>
+    <pre><code>&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Curso de Retalhos Online — Método STAR",
+  "description": "Curso online que ensina a dominar os principais retalhos cirúrgicos e a reconstrução cutânea, do planejamento à execução, em 22 módulos.",
+  "url": "https://conexaocirurgica.com.br/curso-de-retalho-on-line-conexao-cirurgica/",
+  "inLanguage": "pt-BR",
+  "provider": {
+    "@type": "Organization",
+    "name": "Conexão Cirúrgica",
+    "url": "https://conexaocirurgica.com.br"
+  },
+  "instructor": {
+    "@type": "Person",
+    "name": "Bruno Ramos",
+    "jobTitle": "Cirurgião Plástico"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "1997.00",
+    "priceCurrency": "BRL",
+    "availability": "https://schema.org/InStock",
+    "url": "https://conexaocirurgica.com.br/curso-de-retalho-on-line-conexao-cirurgica/"
+  },
+  "hasCourseInstance": {
+    "@type": "CourseInstance",
+    "courseMode": "online",
+    "courseWorkload": "PT22H"
+  }
+}
+&lt;/script&gt;</code></pre>
+    <p class="note">Repita o mesmo bloco nos outros cursos, trocando nome, URL e preço: <b>SutuStart</b> (R$ 67), <b>Suturação</b> (R$ 297).</p>
+  </div>
+
+  <div class="step">
+    <h3>2. Dr. Bruno Ramos — schema de Pessoa (autoridade)</h3>
+    <p class="where">Onde: no <b>rodapé do site</b> (todas as páginas) ou na página "sobre".</p>
+    <pre><code>&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Bruno Ramos",
+  "jobTitle": "Cirurgião Plástico",
+  "description": "Cirurgião plástico com mais de 10 anos de experiência, membro da Sociedade Brasileira de Cirurgia Plástica e preceptor no Hospital Municipal Barata Ribeiro.",
+  "alumniOf": "Fundação Técnico Educacional Souza Marques",
+  "memberOf": "Sociedade Brasileira de Cirurgia Plástica",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Conexão Cirúrgica"
+  },
+  "sameAs": [
+    "https://www.instagram.com/conexaocirurgica/"
+  ]
+}
+&lt;/script&gt;</code></pre>
+    <p class="note"><span class="fill">Conferir</span> o @ real do Instagram e adicionar outros perfis (YouTube, LinkedIn) na lista "sameAs" — isso ajuda a IA a reconhecer o Bruno como uma pessoa real e confiável.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. Conexão Cirúrgica — schema de Organização</h3>
+    <p class="where">Onde: no <b>rodapé do site</b> (todas as páginas).</p>
+    <pre><code>&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Conexão Cirúrgica",
+  "url": "https://conexaocirurgica.com.br",
+  "logo": "https://conexaocirurgica.com.br/wp-content/uploads/LOGO.png",
+  "description": "Educação cirúrgica online em sutura e reconstrução cutânea: cursos, e-books e comunidades para médicos e estudantes.",
+  "sameAs": [
+    "https://www.instagram.com/conexaocirurgica/"
+  ]
+}
+&lt;/script&gt;</code></pre>
+    <p class="note"><span class="fill">Ajustar</span> a URL real do logo e o @ do Instagram.</p>
+  </div>
+
+  <div class="step">
+    <h3>4. FAQ do curso — schema de Perguntas</h3>
+    <p class="where">Onde: na <b>página do STAR</b>, junto da FAQ que já existe. Use as 5 perguntas atuais + as sugeridas abaixo.</p>
+    <pre><code>&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Para quem é o curso de retalhos Método STAR?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Para médicos e estudantes da área da saúde que querem dominar a reconstrução cutânea e os principais tipos de retalhos, do planejamento à execução."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "O que o curso ensina?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "São 22 módulos cobrindo cicatrização, anestesia, diferença entre enxertos e retalhos, curativos e reconstruções de couro cabeludo, nariz, lábios, orelhas, membros e tronco."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quanto custa e como funciona o acesso?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "O curso custa R$ 1.997 à vista (ou 12x de R$ 205,32), com acesso online às aulas gravadas."
+      }
+    }
+  ]
+}
+&lt;/script&gt;</code></pre>
+    <p class="note">Mantenha o texto da FAQ visível na página <b>igual</b> ao do schema. Observação honesta: o Google restringiu o "resultado rico" de FAQ a sites de saúde/governo, então talvez não apareça aquela sanfoninha no Google — mas o texto continua ajudando as IAs a responderem citando vocês.</p>
+  </div>
+
+  <h2>Ajustes de conteúdo (na página do STAR)</h2>
+
+  <div class="step">
+    <h3>Bloco de definição no topo (primeiras ~50 palavras)</h3>
+    <p class="where">As IAs copiam o começo da página. Coloque isto logo abaixo do título:</p>
+    <blockquote>O Método STAR é um curso online de retalhos cirúrgicos e reconstrução cutânea, criado pelo cirurgião plástico Dr. Bruno Ramos. Em 22 módulos, ensina médicos e estudantes a planejar e executar os principais retalhos — do couro cabeludo ao tronco — com mais segurança, menos complicações e melhores resultados estéticos.</blockquote>
+  </div>
+
+  <div class="step">
+    <h3>Títulos em forma de pergunta</h3>
+    <p class="where">Troque títulos "secos" por perguntas que as pessoas realmente fazem:</p>
+    <ul>
+      <li>"Para quem é o curso de retalhos?"</li>
+      <li>"O que você aprende no Método STAR?"</li>
+      <li>"Quanto tempo leva e como é o acesso?"</li>
+      <li>"Quem é o professor?"</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>Adicionar o depoimento do Roberto Castro</h3>
+    <blockquote>"Aula fabulosa. Gosto muito de cirurgia, sou Prof. Universitário da disciplina de Trauma e já estive em muitos cursos bons. O conteúdo é didático, sóbrio, atencioso e verdadeiro."<cite>— Roberto Castro</cite></blockquote>
+    <p class="note">Se conseguirem 2-3 depoimentos de médicos que fizeram o STAR, melhor ainda.</p>
+  </div>
+
+  <h2>Ordem sugerida de execução</h2>
+  <ol class="rank">
+    <li>Colar os 4 blocos de schema (curso, pessoa, organização, FAQ) — <b>maior impacto, uma vez só</b>.</li>
+    <li>Adicionar o bloco de definição no topo + títulos em pergunta.</li>
+    <li>Colocar o depoimento do Roberto.</li>
+    <li>Mostrar "atualizado em [mês/ano]" e revisar a cada 2-3 meses.</li>
+    <li>Repetir os schemas de Curso nas páginas do SutuStart e Suturação.</li>
+  </ol>
+
+  <p class="note" style="margin-top:20px">⚠️ Importante ser honesto: isto <b>aumenta a chance</b> de as IAs recomendarem os cursos — não é garantia, e o resultado aparece com o tempo (as IAs re-leem o site periodicamente). Como a venda do Wellington provou que o canal existe, é um teste de baixo custo e alto retorno.</p>
+
+  <footer>Cardô · para a Conexão Cirúrgica — uso interno</footer>
+</div>
