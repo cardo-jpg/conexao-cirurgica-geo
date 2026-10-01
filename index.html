@@ -255,6 +255,19 @@
     <li>Repetir os schemas de Curso nas páginas do SutuStart e Suturação.</li>
   </ol>
 
+  <h2>Como implementar (passo a passo)</h2>
+  <p>Acesso pela hospedagem <b>Turbo Cloud</b>. Os nomes exatos dos botões podem variar no painel — a lógica é esta:</p>
+  <ol class="rank">
+    <li><b>Backup antes de tudo.</b> <span class="tag easy">1 clique</span><br>No painel do Turbo Cloud, gere um backup do site (ou do WordPress). Schema é seguro e aditivo, mas backup é regra.</li>
+    <li><b>Entrar no WordPress.</b><br>No painel, abra o WordPress do <code>conexaocirurgica.com.br</code> e vá pro <b>wp-admin</b> (o painel de administração).</li>
+    <li><b>Instalar o plugin WPCode.</b> <span class="tag easy">grátis</span><br>No WordPress: <b>Plugins → Adicionar novo</b> → buscar <b>"WPCode"</b> → Instalar → Ativar. (É o jeito seguro de colar código sem editar o tema, que some em atualização.)</li>
+    <li><b>Schemas do site inteiro (Organização + Pessoa).</b><br>WPCode → <b>Add Snippet → Blank Snippet</b> → tipo <b>HTML</b> → cole os blocos <b>2 (Pessoa)</b> e <b>3 (Organização)</b> → em "Location" escolha <b>Site Wide Footer</b> → ative → Salvar.</li>
+    <li><b>Schemas só da página do STAR (Curso + FAQ).</b><br>Crie outro snippet com os blocos <b>1 (Curso)</b> e <b>4 (FAQ)</b> → em "Location/Smart Logic" limite pra carregar <b>só na URL</b> <code>/curso-de-retalho-on-line-conexao-cirurgica/</code> → ative → Salvar.</li>
+    <li><b>Ajustes de conteúdo na página do STAR.</b><br>Abra a página no editor (Elementor): adicione o <b>bloco de definição no topo</b>, troque os títulos por <b>perguntas</b> e cole o <b>depoimento do Roberto</b>. Publicar.</li>
+    <li><b>Testar se funcionou.</b> <span class="tag easy">importante</span><br>Abra <b>search.google.com/test/rich-results</b>, cole a URL do STAR e confirme que ele detecta <b>Course</b>, <b>FAQPage</b> e <b>Person</b>. Sem erro = schema no ar.</li>
+    <li><b>Repetir nos outros cursos.</b><br>Mesmo bloco de Curso (trocando nome, URL e preço) nas páginas do <b>SutuStart</b> (R$ 67) e <b>Suturação</b> (R$ 297).</li>
+  </ol>
+
   <p class="note" style="margin-top:20px">⚠️ Importante ser honesto: isto <b>aumenta a chance</b> de as IAs recomendarem os cursos — não é garantia, e o resultado aparece com o tempo (as IAs re-leem o site periodicamente). Como a venda do Wellington provou que o canal existe, é um teste de baixo custo e alto retorno.</p>
 
   <footer>Cardô · para a Conexão Cirúrgica — uso interno</footer>
